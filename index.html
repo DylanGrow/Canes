@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Carolina Hurricanes · 2026 Playoff Hub</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23CC0000'/%3E%3Ccircle cx='16' cy='16' r='11' fill='none' stroke='white' stroke-width='2'/%3E%3Cpath d='M10 10 L10 22 M10 16 L22 16 M22 10 L22 22' stroke='white' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -64,11 +65,14 @@
   /* CALLOUTS */
   .callout{border-radius:10px;padding:1.1rem 1.25rem;margin-bottom:1rem;
     display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;}
-  .callout.tonight{border:1px solid rgba(204,0,0,.3);background:rgba(204,0,0,.04);}
+  .callout.game-result{border:1px solid rgba(34,197,94,.25);background:rgba(34,197,94,.04);}
   .callout.nextgame{border:1px solid rgba(96,165,250,.2);background:rgba(96,165,250,.03);}
+  .callout.livegame{border:1px solid rgba(239,68,68,.4);background:rgba(239,68,68,.05);animation:pulse-border 2s ease infinite;}
+  @keyframes pulse-border{0%,100%{border-color:rgba(239,68,68,.4)}50%{border-color:rgba(239,68,68,.8)}}
   .c-label{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;margin-bottom:4px;}
   .c-label.red{color:var(--red);}
   .c-label.blue{color:var(--blue);}
+  .c-label.gold{color:var(--gold);}
   .c-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;}
   .c-detail{font-size:13px;color:var(--muted);margin-top:3px;}
   .c-score{font-family:'Barlow Condensed',sans-serif;font-size:38px;font-weight:800;color:var(--green);text-align:right;line-height:1;}
@@ -83,6 +87,7 @@
   .row:last-child{border-bottom:none;}
   .row.alt{background:var(--s2);}
   .row.highlight{background:rgba(96,165,250,.04);}
+  .row.live-row{background:rgba(239,68,68,.05);}
   .col-lbl{font-size:11px;color:var(--muted);min-width:52px;font-family:'Barlow Condensed',sans-serif;
     font-weight:700;letter-spacing:.05em;text-transform:uppercase;}
   .col-inf{flex:1;font-size:13px;color:var(--muted);}
@@ -91,9 +96,10 @@
   .badge-l{background:var(--red-dim);color:#ff6666;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;}
   .badge-next{background:var(--bbg);color:var(--blue);font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;border:1px solid rgba(96,165,250,.2);}
   .badge-live{background:rgba(239,68,68,.14);color:#f87171;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;animation:pulse 1.4s ease infinite;}
+  .badge-scf{background:rgba(245,158,11,.14);color:var(--gold);font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;border:1px solid rgba(245,158,11,.3);}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
 
-  /* ═══ BRACKET ═══ */
+  /* BRACKET */
   .bracket-wrap{overflow-x:auto;padding-bottom:8px;}
   .bracket{display:flex;align-items:center;gap:6px;min-width:940px;}
   .conf{display:flex;align-items:stretch;gap:6px;}
@@ -102,8 +108,7 @@
     letter-spacing:.08em;margin-bottom:3px;}
   .bmatch{background:var(--s1);border:1px solid var(--border);border-radius:7px;overflow:hidden;
     flex:1;display:flex;flex-direction:column;justify-content:center;}
-  .bmatch.active{border-color:rgba(204,0,0,.45);}
-  .bmatch.scf{border-color:rgba(245,158,11,.35);background:rgba(245,158,11,.03);}
+  .bmatch.scf{border-color:rgba(245,158,11,.45);background:rgba(245,158,11,.03);}
   .bteam{display:flex;align-items:center;justify-content:space-between;padding:5px 8px;
     font-size:13px;border-bottom:1px solid var(--border);gap:4px;}
   .bteam:last-child{border-bottom:none;}
@@ -115,10 +120,11 @@
   .bseed{font-size:10px;color:var(--muted);}
   .bres{font-size:11px;white-space:nowrap;}
   .bres.w{color:var(--green);}
-  .bres.a{color:var(--red);}
+  .bres.a{color:var(--muted);}
+  .bres.live{color:var(--gold);}
   .barr{color:var(--faint);font-size:20px;flex-shrink:0;line-height:1;}
 
-  /* ═══ PLAYERS TABLE ═══ */
+  /* PLAYERS TABLE */
   .ptable{width:100%;border-collapse:collapse;}
   .ptable th{text-align:left;padding:.55rem .9rem;font-size:10px;font-weight:700;
     color:var(--muted);text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border);}
@@ -135,24 +141,40 @@
   .cbar-track{height:6px;background:var(--s3);border-radius:3px;overflow:hidden;}
   .cbar-fill{height:100%;background:var(--red);border-radius:3px;}
 
-  /* ═══ LIVE TAB ═══ */
+  /* LIVE TAB */
   .cd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.5rem;}
   .cd-card{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:1rem;text-align:center;}
   .cd-val{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:800;color:var(--red);line-height:1;}
   .cd-unit{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:4px;}
-  .live-feed{background:var(--s1);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
-  .lgrow{display:flex;justify-content:space-between;align-items:center;
-    padding:.8rem 1.1rem;border-bottom:1px solid var(--border);}
-  .lgrow:last-child{border-bottom:none;}
-  .lgrow.car-game{background:rgba(204,0,0,.04);}
-  .lg-teams{font-size:14px;font-weight:500;}
-  .lg-status{font-size:11px;color:var(--muted);margin-top:2px;}
-  .lg-score{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;text-align:right;}
+
+  /* SCOREBOARD */
+  .scoreboard{background:var(--s1);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:1rem;}
+  .sb-row{display:flex;justify-content:space-between;align-items:center;
+    padding:.85rem 1.1rem;border-bottom:1px solid var(--border);}
+  .sb-row:last-child{border-bottom:none;}
+  .sb-row.car-game{background:rgba(204,0,0,.05);}
+  .sb-row.scf-game{background:rgba(245,158,11,.04);border-left:2px solid rgba(245,158,11,.4);}
+  .sb-left{flex:1;}
+  .sb-teams{font-size:14px;font-weight:500;}
+  .sb-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+  .sb-right{text-align:right;}
+  .sb-score{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;line-height:1;}
+  .sb-state{font-size:11px;color:var(--muted);margin-top:2px;}
+
   .refresh-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
   .refresh-btn{background:var(--s2);border:1px solid var(--border);color:var(--muted);
-    font-size:12px;padding:5px 12px;border-radius:6px;cursor:pointer;font-family:'Barlow',sans-serif;}
+    font-size:12px;padding:5px 12px;border-radius:6px;cursor:pointer;font-family:'Barlow',sans-serif;
+    transition:color .15s;}
   .refresh-btn:hover{color:var(--text);}
+  .refresh-btn:disabled{opacity:.4;cursor:not-allowed;}
   .rt{font-size:11px;color:var(--faint);margin-top:10px;}
+
+  /* SERIES TRACKER */
+  .series-bar{display:flex;align-items:center;justify-content:center;gap:6px;margin:1.2rem 0;}
+  .series-dot{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border);}
+  .series-dot.car{background:var(--red);}
+  .series-dot.vgk{background:#b8a000;}
+  .series-dot.empty{background:var(--s3);}
 
   @media(max-width:600px){
     .stat-grid{grid-template-columns:repeat(2,1fr);}
@@ -180,71 +202,74 @@
 
   <div class="hero">
     <div>
-      <div class="hero-eye">2026 NHL Playoffs · Eastern Conference Finals · Seed #1</div>
+      <div class="hero-eye">2026 Stanley Cup Final · Eastern Conference Champions · Seed #1</div>
       <div class="hero-name"><em>Carolina</em> Hurricanes</div>
-      <div class="hero-sub">vs. Montreal Canadiens (seed #4)</div>
+      <div class="hero-sub">vs. Vegas Golden Knights (Western Conf. Champions, Seed #4)</div>
     </div>
     <div class="hero-right">
-      <div class="hero-score">3–1</div>
-      <div class="pill pill-red">One win from the Cup Final</div>
+      <div class="hero-score" id="ov-series">1–1</div>
+      <div class="pill pill-gold" id="ov-pill">Series tied — Game 3 tomorrow</div>
     </div>
   </div>
 
   <div class="stat-grid">
-    <div class="stat-card"><div class="stat-label">Playoff W–L</div><div class="stat-val">11–1</div></div>
-    <div class="stat-card"><div class="stat-label">GF / GA</div><div class="stat-val">36<span style="color:var(--muted);font-size:16px;"> / </span>20</div></div>
+    <div class="stat-card"><div class="stat-label">Playoff W–L</div><div class="stat-val" id="ov-record">13–2</div></div>
+    <div class="stat-card"><div class="stat-label">GF / GA</div><div class="stat-val">44<span style="color:var(--muted);font-size:16px;"> / </span>27</div></div>
     <div class="stat-card"><div class="stat-label">Sweeps</div><div class="stat-val red">2</div></div>
-    <div class="stat-card"><div class="stat-label">G5 Win Prob.</div><div class="stat-val green">66.7%</div></div>
+    <div class="stat-card"><div class="stat-label">Finals Record</div><div class="stat-val green">1–1</div></div>
   </div>
 
-  <div class="callout tonight">
-    <div>
-      <div class="c-label red">★ Tonight · Game 4 — Final</div>
-      <div class="c-title">CAR Hurricanes at MTL Canadiens</div>
-      <div class="c-detail">May 27 · Bell Centre, Montreal · Shutout win</div>
-    </div>
-    <div>
-      <div class="c-score">4 – 0</div>
-      <div class="c-note">Series lead now 3–1</div>
-    </div>
-  </div>
+  <!-- Dynamic callout — filled by JS -->
+  <div id="ov-callout-container"></div>
 
-  <div class="callout nextgame">
-    <div>
-      <div class="c-label blue">⚡ Up Next · Game 5 — Potential Series Clincher</div>
-      <div class="c-title">MTL Canadiens at CAR Hurricanes</div>
-      <div class="c-detail">Friday, May 29 · 8:00 PM EDT · PNC Arena, Raleigh NC</div>
-    </div>
-    <div style="text-align:right;">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:var(--blue);line-height:1;">66.7%</div>
-      <div style="font-size:11px;color:var(--muted);margin-top:3px;">CAR win probability</div>
-    </div>
-  </div>
-
+  <!-- SCF Game Log — filled by JS -->
   <div class="card">
-    <div class="card-hdr">Eastern Conference Finals — Game Log</div>
-    <div class="row"><div class="col-lbl">Game 1</div><div class="col-inf">May 21 · at CAR (PNC Arena)</div><div class="col-sc">2–6</div><span class="badge-l">L</span></div>
-    <div class="row alt"><div class="col-lbl">Game 2</div><div class="col-inf">May 23 · at CAR (PNC Arena) — OT</div><div class="col-sc">3–2</div><span class="badge-w">W</span></div>
-    <div class="row"><div class="col-lbl">Game 3</div><div class="col-inf">May 25 · at MTL (Bell Centre)</div><div class="col-sc">3–2</div><span class="badge-w">W</span></div>
-    <div class="row alt"><div class="col-lbl">Game 4</div><div class="col-inf">May 27 · at MTL &nbsp;<span style="color:var(--red)">★ Tonight</span></div><div class="col-sc">4–0</div><span class="badge-w">W</span></div>
-    <div class="row highlight"><div class="col-lbl">Game 5</div><div class="col-inf" style="color:var(--blue)">Fri May 29, 8:00 PM EDT · at CAR</div><div class="col-sc" style="color:var(--muted);font-size:14px;">—</div><span class="badge-next">Next</span></div>
+    <div class="card-hdr" id="scf-log-hdr">Stanley Cup Final — Game Log</div>
+    <div id="scf-log">
+      <div class="row"><div class="col-lbl">Game 1</div><div class="col-inf">Jun 2 · at CAR (PNC Arena)</div><div class="col-sc">4–5</div><span class="badge-l">L</span></div>
+      <div class="row alt"><div class="col-lbl">Game 2</div><div class="col-inf">Jun 4 · at CAR (PNC Arena) — OT</div><div class="col-sc">4–3</div><span class="badge-w">W</span></div>
+      <div class="row highlight"><div class="col-lbl">Game 3</div><div class="col-inf" style="color:var(--blue)">Sat Jun 6 · 8:00 PM EDT · at VGK (T-Mobile Arena)</div><div class="col-sc" style="color:var(--muted);font-size:14px;">—</div><span class="badge-next">Next</span></div>
+      <div class="row"><div class="col-lbl">Game 4</div><div class="col-inf" style="color:var(--muted)">Tue Jun 9 · at VGK</div><div class="col-sc" style="color:var(--faint);font-size:14px;">—</div><span style="font-size:11px;color:var(--faint);">TBD</span></div>
+      <div class="row alt"><div class="col-lbl">Game 5*</div><div class="col-inf" style="color:var(--muted)">Thu Jun 11 · at CAR</div><div class="col-sc" style="color:var(--faint);font-size:14px;">—</div><span style="font-size:11px;color:var(--faint);">If needed</span></div>
+    </div>
   </div>
 
+  <!-- Playoff Run -->
   <div class="card">
     <div class="card-hdr">2026 Playoff Run</div>
-    <div class="row"><div class="col-lbl" style="min-width:68px;">Round 1</div><div class="col-inf" style="color:var(--text);font-weight:500;">vs. Ottawa Senators</div><div style="font-size:12px;color:var(--muted);margin-right:8px;">GF 11 · GA 5</div><span class="pill pill-green" style="font-size:10px;padding:3px 10px;margin-top:0;">Sweep 4–0</span></div>
-    <div class="row alt"><div class="col-lbl" style="min-width:68px;">Round 2</div><div class="col-inf" style="color:var(--text);font-weight:500;">vs. Philadelphia Flyers</div><div style="font-size:12px;color:var(--muted);margin-right:8px;">GF 13 · GA 5</div><span class="pill pill-green" style="font-size:10px;padding:3px 10px;margin-top:0;">Sweep 4–0</span></div>
-    <div class="row"><div class="col-lbl" style="min-width:68px;">ECF</div><div class="col-inf" style="color:var(--text);font-weight:500;">vs. Montreal Canadiens</div><div style="font-size:12px;color:var(--muted);margin-right:8px;">GF 12 · GA 10</div><span class="badge-live">Live 3–1</span></div>
+    <div class="row">
+      <div class="col-lbl" style="min-width:68px;">Round 1</div>
+      <div class="col-inf" style="color:var(--text);font-weight:500;">vs. Ottawa Senators</div>
+      <div style="font-size:12px;color:var(--muted);margin-right:8px;">GF 11 · GA 5</div>
+      <span class="pill pill-green" style="font-size:10px;padding:3px 10px;margin-top:0;">Sweep 4–0</span>
+    </div>
+    <div class="row alt">
+      <div class="col-lbl" style="min-width:68px;">Round 2</div>
+      <div class="col-inf" style="color:var(--text);font-weight:500;">vs. Philadelphia Flyers</div>
+      <div style="font-size:12px;color:var(--muted);margin-right:8px;">GF 13 · GA 5</div>
+      <span class="pill pill-green" style="font-size:10px;padding:3px 10px;margin-top:0;">Sweep 4–0</span>
+    </div>
+    <div class="row">
+      <div class="col-lbl" style="min-width:68px;">ECF</div>
+      <div class="col-inf" style="color:var(--text);font-weight:500;">vs. Montreal Canadiens</div>
+      <div style="font-size:12px;color:var(--muted);margin-right:8px;">GF 16 · GA 12</div>
+      <span class="pill pill-green" style="font-size:10px;padding:3px 10px;margin-top:0;">Won 4–1</span>
+    </div>
+    <div class="row alt">
+      <div class="col-lbl" style="min-width:68px;">SCF</div>
+      <div class="col-inf" style="color:var(--gold);font-weight:500;">vs. Vegas Golden Knights</div>
+      <div style="font-size:12px;color:var(--muted);margin-right:8px;">GF 8 · GA 8</div>
+      <span class="badge-scf">Live 1–1</span>
+    </div>
   </div>
 </div>
 
 <!-- ══════════════════ BRACKET ══════════════════ -->
 <div id="tab-bracket" class="tab-content">
   <div class="card" style="padding:1rem;margin-bottom:1rem;">
-    <div style="font-size:13px;color:var(--muted);">Full 2026 NHL Playoff bracket. <span style="color:var(--green)">Green</span> = series winner &nbsp;·&nbsp; <span style="color:var(--red)">Red highlight</span> = Hurricanes &nbsp;·&nbsp; <span style="color:var(--gold)">Gold</span> = Cup Final &nbsp;·&nbsp; Bracket scrolls horizontally on mobile.</div>
+    <div style="font-size:13px;color:var(--muted);">Full 2026 NHL Playoff bracket. <span style="color:var(--green)">Green</span> = series winner &nbsp;·&nbsp; <span style="color:var(--red)">Red</span> = Hurricanes &nbsp;·&nbsp; <span style="color:var(--gold)">Gold</span> = Cup Final in progress.</div>
   </div>
 
-  <!-- EAST LABEL -->
   <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">🏒 Eastern Conference</div>
 
   <div class="bracket-wrap">
@@ -293,9 +318,9 @@
         <div>
           <div class="bround-lbl">Conf. Finals</div>
           <div class="bround">
-            <div class="bmatch active">
-              <div class="bteam car"><span class="bname">CAR</span><span class="bseed">(1)</span><span class="bres a">3–1 ●</span></div>
-              <div class="bteam"><span class="bname">MTL</span><span class="bseed">(4)</span></div>
+            <div class="bmatch">
+              <div class="bteam car"><span class="bname">CAR</span><span class="bseed">(1)</span><span class="bres w">W 4–1</span></div>
+              <div class="bteam lost"><span class="bname">MTL</span><span class="bseed">(4)</span></div>
             </div>
           </div>
         </div>
@@ -303,12 +328,16 @@
 
       <!-- SCF -->
       <div class="barr">›</div>
-      <div style="width:150px;flex-shrink:0;">
+      <div style="width:158px;flex-shrink:0;">
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;
           color:var(--gold);letter-spacing:.1em;text-transform:uppercase;text-align:center;margin-bottom:6px;">🏆 Stanley Cup Final</div>
         <div class="bmatch scf">
-          <div class="bteam win"><span class="bname">VGK</span><span class="bseed">(W4)</span><span class="bres w">West Champs</span></div>
-          <div class="bteam tbd"><span class="bname">TBD</span><span style="font-size:10px;color:var(--muted);margin-left:4px;">ECF Winner</span></div>
+          <div class="bteam car"><span class="bname">CAR</span><span class="bseed">(E1)</span><span class="bres live" id="br-car-wins">1–1</span></div>
+          <div class="bteam"><span class="bname">VGK</span><span class="bseed">(W4)</span><span class="bres live" id="br-vgk-wins">1–1</span></div>
+        </div>
+        <div style="text-align:center;margin-top:6px;">
+          <div class="series-bar" id="series-dots"></div>
+          <div style="font-size:10px;color:var(--muted)" id="br-series-label">Series tied 1–1</div>
         </div>
       </div>
       <div class="barr">‹</div>
@@ -371,14 +400,14 @@
 <!-- ══════════════════ PLAYERS ══════════════════ -->
 <div id="tab-players" class="tab-content">
 
-  <!-- Game 4 Stars -->
+  <!-- Game 2 Stars -->
   <div class="card">
-    <div class="card-hdr">Game 4 Stars — Tonight's Shutout (CAR 4–0 MTL)</div>
+    <div class="card-hdr">Game 2 Stars — CAR 4, VGK 3 (OT) · Jun 4</div>
     <div class="row">
       <div style="font-size:20px;margin-right:6px;">⭐</div>
       <div style="flex:1;">
-        <div style="font-size:14px;font-weight:500;">Jordan Staal <span class="pos">C</span></div>
-        <div style="font-size:12px;color:var(--muted);">1G · 12 faceoffs won · 5 hits</div>
+        <div style="font-size:14px;font-weight:500;">Seth Jarvis <span class="pos">F</span></div>
+        <div style="font-size:12px;color:var(--muted);">OT winner (PP) · 1G · series-saving goal</div>
       </div>
       <div class="pill pill-gold" style="margin-top:0;font-size:10px;">1st Star</div>
     </div>
@@ -386,48 +415,23 @@
       <div style="font-size:20px;margin-right:6px;">⭐</div>
       <div style="flex:1;">
         <div style="font-size:14px;font-weight:500;">Sebastian Aho <span class="pos">C</span></div>
-        <div style="font-size:12px;color:var(--muted);">1G (PP · Game-winner) · 2 SOG</div>
+        <div style="font-size:12px;color:var(--muted);">1G · team-leading +2 · tied 2–2 with 1:34 left in 3rd</div>
       </div>
-      <div class="pill pill-red" style="margin-top:0;font-size:10px;">GWG</div>
+      <div class="pill pill-red" style="margin-top:0;font-size:10px;">Clutch</div>
     </div>
     <div class="row">
       <div style="font-size:20px;margin-right:6px;">⭐</div>
       <div style="flex:1;">
-        <div style="font-size:14px;font-weight:500;">K'Andre Miller <span class="pos">D</span></div>
-        <div style="font-size:12px;color:var(--muted);">1A · 2 SOG · 4 blocked shots</div>
+        <div style="font-size:14px;font-weight:500;">Andrei Svechnikov <span class="pos">F</span></div>
+        <div style="font-size:12px;color:var(--muted);">1G · 5 SOG · started 3rd-period comeback</div>
       </div>
       <div class="pill pill-blue" style="margin-top:0;font-size:10px;">3rd Star</div>
     </div>
   </div>
 
-  <!-- Game 4 Goal Scorers -->
+  <!-- SCF Series Point Leaders -->
   <div class="card">
-    <div class="card-hdr">Game 4 Goal Scorers</div>
-    <div class="row">
-      <div style="font-size:13px;font-weight:500;flex:1;">Andrei Svechnikov <span class="pos">F</span></div>
-      <div style="font-size:12px;color:var(--muted);margin-right:10px;">6 SOG · 16.7%</div>
-      <span style="font-size:12px;color:var(--muted);">EV (EN)</span>
-    </div>
-    <div class="row alt">
-      <div style="font-size:13px;font-weight:500;flex:1;">Logan Stankoven <span class="pos">F</span></div>
-      <div style="font-size:12px;color:var(--muted);margin-right:10px;">7 SOG · 14.3%</div>
-      <span style="font-size:12px;color:var(--muted);">EV</span>
-    </div>
-    <div class="row">
-      <div style="font-size:13px;font-weight:500;flex:1;">Jordan Staal <span class="pos">C</span></div>
-      <div style="font-size:12px;color:var(--muted);margin-right:10px;">1 SOG · 100%</div>
-      <span style="font-size:12px;color:var(--muted);">EV</span>
-    </div>
-    <div class="row alt">
-      <div style="font-size:13px;font-weight:500;flex:1;">Sebastian Aho <span class="pos">C</span></div>
-      <div style="font-size:12px;color:var(--muted);margin-right:10px;">2 SOG · 50%</div>
-      <span style="font-size:12px;color:var(--muted);">PP · GWG</span>
-    </div>
-  </div>
-
-  <!-- ECF Series Point Leaders -->
-  <div class="card">
-    <div class="card-hdr">ECF Series Leaders — CAR (pts from Games 2 &amp; 4)</div>
+    <div class="card-hdr">SCF Series Leaders — CAR (through Game 2)</div>
     <table class="ptable">
       <thead>
         <tr>
@@ -439,44 +443,51 @@
         </tr>
       </thead>
       <tbody>
-        <tr><td>Nikolaj Ehlers <span class="pos">F</span> <span style="font-size:11px;color:var(--gold);">⭐ G2 1st</span></td><td class="r">2</td><td class="r">0</td><td class="r" style="color:var(--green)">2</td><td class="r">6</td></tr>
-        <tr><td>Jalen Chatfield <span class="pos">D</span> <span style="font-size:11px;color:var(--muted);">G2 3rd ⭐</span></td><td class="r">0</td><td class="r">2</td><td class="r" style="color:var(--green)">2</td><td class="r">2</td></tr>
-        <tr><td>Mark Jankowski <span class="pos">F</span></td><td class="r">0</td><td class="r">2</td><td class="r" style="color:var(--green)">2</td><td class="r">2</td></tr>
-        <tr><td>Sebastian Aho <span class="pos">C</span></td><td class="r">1</td><td class="r">0</td><td class="r">1</td><td class="r">4</td></tr>
-        <tr><td>Jordan Staal <span class="pos">C</span> <span style="font-size:11px;color:var(--gold);">⭐ G4 1st</span></td><td class="r">1</td><td class="r">0</td><td class="r">1</td><td class="r">1</td></tr>
-        <tr><td>Logan Stankoven <span class="pos">F</span></td><td class="r">1</td><td class="r">0</td><td class="r">1</td><td class="r">7</td></tr>
-        <tr><td>Andrei Svechnikov <span class="pos">F</span></td><td class="r">1</td><td class="r">0</td><td class="r">1</td><td class="r">6</td></tr>
-        <tr><td>Eric Robinson <span class="pos">F</span> <span style="font-size:11px;color:var(--muted);">G2 2nd ⭐</span></td><td class="r">1</td><td class="r">0</td><td class="r">1</td><td class="r">2</td></tr>
-        <tr><td>K'Andre Miller <span class="pos">D</span> <span style="font-size:11px;color:var(--gold);">⭐ G4 3rd</span></td><td class="r">0</td><td class="r">1</td><td class="r">1</td><td class="r">3</td></tr>
-        <tr><td>Jaccob Slavin <span class="pos">D</span></td><td class="r">0</td><td class="r">1</td><td class="r">1</td><td class="r">1</td></tr>
+        <tr><td>Sebastian Aho <span class="pos">C</span></td><td class="r">1</td><td class="r">1</td><td class="r" style="color:var(--green)">2</td><td class="r">7</td></tr>
+        <tr><td>Andrei Svechnikov <span class="pos">F</span></td><td class="r">1</td><td class="r">1</td><td class="r" style="color:var(--green)">2</td><td class="r">9</td></tr>
+        <tr><td>Seth Jarvis <span class="pos">F</span> <span style="font-size:11px;color:var(--gold);">⭐ G2 OTW</span></td><td class="r">1</td><td class="r">0</td><td class="r">1</td><td class="r">4</td></tr>
+        <tr><td>Jordan Staal <span class="pos">C</span></td><td class="r">1</td><td class="r">0</td><td class="r">1</td><td class="r">3</td></tr>
+        <tr><td>Jaccob Slavin <span class="pos">D</span></td><td class="r">0</td><td class="r">2</td><td class="r">2</td><td class="r">3</td></tr>
+        <tr><td>Jalen Chatfield <span class="pos">D</span></td><td class="r">0</td><td class="r">1</td><td class="r">1</td><td class="r">2</td></tr>
+        <tr><td>K'Andre Miller <span class="pos">D</span></td><td class="r">0</td><td class="r">1</td><td class="r">1</td><td class="r">4</td></tr>
       </tbody>
     </table>
   </div>
 
-  <!-- Team Stats Comparison G4 -->
+  <!-- Game 2 Team Stats -->
   <div class="card">
-    <div class="card-hdr">Game 4 Team Stats — CAR vs MTL</div>
+    <div class="card-hdr">Game 2 Team Stats — CAR vs VGK (OT)</div>
     <div style="padding:1.1rem 1.25rem;">
       <div class="cbar">
-        <div class="cbar-lbl"><span class="car">CAR 43</span><span>Shots on Goal</span><span>MTL 18</span></div>
-        <div class="cbar-track"><div class="cbar-fill" style="width:70%"></div></div>
+        <div class="cbar-lbl"><span class="car">CAR 34</span><span>Shots on Goal</span><span>VGK 28</span></div>
+        <div class="cbar-track"><div class="cbar-fill" style="width:55%"></div></div>
       </div>
       <div class="cbar">
-        <div class="cbar-lbl"><span class="car">CAR 9.3%</span><span>Shooting %</span><span>MTL 0.0%</span></div>
-        <div class="cbar-track"><div class="cbar-fill" style="width:100%"></div></div>
+        <div class="cbar-lbl"><span class="car">CAR 11.8%</span><span>Shooting %</span><span>VGK 10.7%</span></div>
+        <div class="cbar-track"><div class="cbar-fill" style="width:52%"></div></div>
       </div>
       <div class="cbar">
-        <div class="cbar-lbl"><span class="car">CAR 1/6</span><span>Power Play</span><span>MTL 0/2</span></div>
+        <div class="cbar-lbl"><span class="car">CAR 1/3</span><span>Power Play</span><span>VGK 0/2</span></div>
         <div class="cbar-track"><div class="cbar-fill" style="width:75%"></div></div>
       </div>
       <div class="cbar">
-        <div class="cbar-lbl"><span class="car">CAR 7</span><span>Takeaways</span><span>MTL 3</span></div>
-        <div class="cbar-track"><div class="cbar-fill" style="width:70%"></div></div>
+        <div class="cbar-lbl"><span class="car">CAR 6</span><span>Takeaways</span><span>VGK 5</span></div>
+        <div class="cbar-track"><div class="cbar-fill" style="width:55%"></div></div>
       </div>
       <div class="cbar" style="margin-bottom:0">
-        <div class="cbar-lbl"><span class="car">CAR 30</span><span>Hits</span><span>MTL 30</span></div>
-        <div class="cbar-track"><div class="cbar-fill" style="width:50%"></div></div>
+        <div class="cbar-lbl"><span class="car">CAR 27</span><span>Hits</span><span>VGK 33</span></div>
+        <div class="cbar-track"><div class="cbar-fill" style="width:45%"></div></div>
       </div>
+    </div>
+  </div>
+
+  <!-- G2 comeback callout -->
+  <div style="background:var(--s1);border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:1.1rem 1.25rem;">
+    <div style="font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:6px;">Game 2 Comeback Timeline</div>
+    <div style="font-size:13px;color:var(--muted);line-height:1.7;">
+      CAR trailed <strong style="color:var(--text)">2–0</strong> late in the 3rd period at home.
+      Svechnikov cut it to 2–1 → Aho tied it 2–2 with <strong style="color:var(--text)">1:34 remaining</strong> → Mark Stone (VGK) tied again in the dying seconds.
+      Seth Jarvis ended it with a PP goal in OT. CAR takes the split back to Las Vegas.
     </div>
   </div>
 </div>
@@ -484,15 +495,10 @@
 <!-- ══════════════════ LIVE ══════════════════ -->
 <div id="tab-live" class="tab-content">
 
-  <div class="callout nextgame" style="margin-bottom:1.5rem;">
-    <div>
-      <div class="c-label blue">⚡ Series Clincher — Game 5</div>
-      <div class="c-title">CAR Hurricanes vs. MTL Canadiens</div>
-      <div class="c-detail">Friday, May 29 · 8:00 PM EDT · PNC Arena, Raleigh NC · CAR leads series 3–1</div>
-    </div>
-  </div>
+  <!-- Dynamic series status -->
+  <div id="live-series-callout" style="margin-bottom:1.5rem;"></div>
 
-  <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">Countdown to Puck Drop</div>
+  <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">Countdown to Game 3 Puck Drop</div>
   <div class="cd-grid">
     <div class="cd-card"><div class="cd-val" id="cd-d">--</div><div class="cd-unit">Days</div></div>
     <div class="cd-card"><div class="cd-val" id="cd-h">--</div><div class="cd-unit">Hours</div></div>
@@ -502,16 +508,21 @@
 
   <div class="refresh-row">
     <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">Today's NHL Scores</div>
-    <button class="refresh-btn" onclick="fetchScores()">↻ Refresh</button>
+    <button class="refresh-btn" id="refresh-btn" onclick="fetchScores()">↻ Refresh</button>
   </div>
-  <div class="live-feed" id="live-feed"><div style="padding:1rem;color:var(--muted);font-size:13px;">Loading…</div></div>
-  <div class="rt" id="rt"></div>
 
+  <div class="scoreboard" id="live-feed">
+    <div style="padding:1.2rem;color:var(--muted);font-size:13px;">Loading…</div>
+  </div>
+  <div class="rt" id="rt"></div>
 </div>
+
 </div><!-- /.page -->
 
 <script>
-// ── TAB SWITCHING
+// ═══════════════════════════════════════════════
+// TAB SWITCHING
+// ═══════════════════════════════════════════════
 function switchTab(name, btn) {
   document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(e => e.classList.remove('active'));
@@ -520,23 +531,263 @@ function switchTab(name, btn) {
   if (name === 'live') startLive();
 }
 
-// ── COUNTDOWN — Game 5: May 29 2026 8 PM EDT = May 30 00:00 UTC
-const G5 = new Date('2026-05-30T00:00:00Z');
-function tick() {
-  const diff = G5 - Date.now();
-  if (diff <= 0) { ['d','h','m','s'].forEach(u => document.getElementById('cd-'+u).textContent='00'); return; }
-  const d = Math.floor(diff/864e5);
-  const h = Math.floor((diff%864e5)/36e5);
-  const m = Math.floor((diff%36e5)/6e4);
-  const s = Math.floor((diff%6e4)/1e3);
-  document.getElementById('cd-d').textContent = String(d).padStart(2,'0');
-  document.getElementById('cd-h').textContent = String(h).padStart(2,'0');
-  document.getElementById('cd-m').textContent = String(m).padStart(2,'0');
-  document.getElementById('cd-s').textContent = String(s).padStart(2,'0');
-}
-setInterval(tick, 1000); tick();
+// ═══════════════════════════════════════════════
+// STATE — known SCF results + schedule
+// ═══════════════════════════════════════════════
+const SCF = {
+  games: [
+    { num: 1, home: 'CAR', away: 'VGK', date: '2026-06-03T00:00:00Z', carScore: 4, vgkScore: 5, state: 'FINAL', venue: 'PNC Arena' },
+    { num: 2, home: 'CAR', away: 'VGK', date: '2026-06-05T00:00:00Z', carScore: 4, vgkScore: 3, state: 'FINAL', note: 'OT', venue: 'PNC Arena' },
+    { num: 3, home: 'VGK', away: 'CAR', date: '2026-06-07T00:00:00Z', carScore: null, vgkScore: null, state: 'FUT', venue: 'T-Mobile Arena, Las Vegas' },
+    { num: 4, home: 'VGK', away: 'CAR', date: '2026-06-10T00:00:00Z', carScore: null, vgkScore: null, state: 'FUT', venue: 'T-Mobile Arena, Las Vegas' },
+    { num: 5, home: 'CAR', away: 'VGK', date: '2026-06-12T00:00:00Z', carScore: null, vgkScore: null, state: 'IF', venue: 'PNC Arena' },
+    { num: 6, home: 'VGK', away: 'CAR', date: '2026-06-15T00:00:00Z', carScore: null, vgkScore: null, state: 'IF', venue: 'T-Mobile Arena, Las Vegas' },
+    { num: 7, home: 'CAR', away: 'VGK', date: '2026-06-18T00:00:00Z', carScore: null, vgkScore: null, state: 'IF', venue: 'PNC Arena' },
+  ]
+};
 
-// ── LIVE SCORES
+// ═══════════════════════════════════════════════
+// NHL API — fetch live scores, merge with SCF state
+// ═══════════════════════════════════════════════
+const API = 'https://api-web.nhle.com/v1';
+
+async function fetchNHLScores() {
+  const today = new Date().toISOString().split('T')[0];
+  // Try scoreboard/now first (includes live + recent), fall back to date-specific
+  const [r1, r2] = await Promise.allSettled([
+    fetch(`${API}/scoreboard/now`),
+    fetch(`${API}/score/${today}`)
+  ]);
+
+  let games = [];
+  for (const r of [r1, r2]) {
+    if (r.status === 'fulfilled' && r.value.ok) {
+      const d = await r.value.json();
+      const list = d.games || (d.gameWeek && d.gameWeek.flatMap(w => w.games || [])) || [];
+      list.forEach(g => { if (!games.find(x => x.id === g.id)) games.push(g); });
+    }
+  }
+  return games;
+}
+
+function isSCFGame(g) {
+  const a = g.awayTeam?.abbrev, h = g.homeTeam?.abbrev;
+  return (a === 'CAR' || h === 'CAR') && (a === 'VGK' || h === 'VGK');
+}
+
+function mergeAPIGames(apiGames) {
+  // Patch SCF local state with live API data
+  apiGames.filter(isSCFGame).forEach(ag => {
+    const dt = ag.startTimeUTC?.split('T')[0];
+    const match = SCF.games.find(sg => sg.date.startsWith(dt));
+    if (!match) return;
+    match.apiGame = ag;
+    match.state = ag.gameState;
+    if (ag.awayTeam?.abbrev === 'CAR') {
+      match.carScore = ag.awayTeam?.score ?? match.carScore;
+      match.vgkScore = ag.homeTeam?.score ?? match.vgkScore;
+    } else {
+      match.carScore = ag.homeTeam?.score ?? match.carScore;
+      match.vgkScore = ag.awayTeam?.score ?? match.vgkScore;
+    }
+    if (ag.clock?.timeRemaining) match.clock = ag.clock.timeRemaining;
+    if (ag.period) match.period = ag.period;
+  });
+}
+
+function getSeriesWins() {
+  let car = 0, vgk = 0;
+  SCF.games.forEach(g => {
+    if (g.state === 'FINAL' || g.state === 'OFF') {
+      if (g.carScore > g.vgkScore) car++;
+      else vgk++;
+    }
+  });
+  return { car, vgk };
+}
+
+function periodLabel(p) {
+  if (!p) return '';
+  if (typeof p === 'object') {
+    if (p.periodType === 'OT') return 'OT';
+    if (p.periodType === 'SO') return 'SO';
+    p = p.number;
+  }
+  return p === 1 ? '1st' : p === 2 ? '2nd' : p === 3 ? '3rd' : `P${p}`;
+}
+
+// ═══════════════════════════════════════════════
+// RENDER OVERVIEW callout
+// ═══════════════════════════════════════════════
+function renderOverviewCallout(wins) {
+  const liveGame = SCF.games.find(g => g.state === 'LIVE' || g.state === 'CRIT');
+  const nextGame = SCF.games.find(g => g.state === 'FUT' || g.state === 'PRE');
+  const lastFinished = [...SCF.games].reverse().find(g => g.state === 'FINAL' || g.state === 'OFF');
+  const el = document.getElementById('ov-callout-container');
+
+  if (liveGame) {
+    const isCarHome = liveGame.home === 'CAR';
+    const carSc = liveGame.carScore ?? 0, vgkSc = liveGame.vgkScore ?? 0;
+    const period = periodLabel(liveGame.period) || '–';
+    el.innerHTML = `
+      <div class="callout livegame">
+        <div>
+          <div class="c-label red">⚡ LIVE NOW — Game ${liveGame.num}</div>
+          <div class="c-title">${isCarHome ? 'CAR Hurricanes vs VGK Golden Knights' : 'CAR Hurricanes at VGK Golden Knights'}</div>
+          <div class="c-detail">${period} · ${liveGame.clock || ''} · ${liveGame.venue}</div>
+        </div>
+        <div>
+          <div class="c-score" style="color:${carSc >= vgkSc ? 'var(--green)' : '#ff6666'}">${carSc} – ${vgkSc}</div>
+          <div class="c-note" style="color:var(--muted)">CAR ${carSc >= vgkSc ? 'leads' : 'trails'}</div>
+        </div>
+      </div>`;
+  } else if (nextGame) {
+    const d = new Date(nextGame.date);
+    const dateStr = d.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'});
+    const timeStr = d.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit', timeZoneName:'short'});
+    el.innerHTML = `
+      <div class="callout nextgame">
+        <div>
+          <div class="c-label blue">⚡ Up Next — Game ${nextGame.num}</div>
+          <div class="c-title">${nextGame.away === 'CAR' ? 'CAR Hurricanes at VGK Golden Knights' : 'VGK Golden Knights at CAR Hurricanes'}</div>
+          <div class="c-detail">${dateStr} · ${timeStr} · ${nextGame.venue}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--blue);line-height:1;">Game ${nextGame.num} of 7</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:3px;">Series tied ${wins.car}–${wins.vgk}</div>
+        </div>
+      </div>`;
+  } else if (lastFinished) {
+    const carWon = lastFinished.carScore > lastFinished.vgkScore;
+    el.innerHTML = `
+      <div class="callout game-result">
+        <div>
+          <div class="c-label ${carWon ? 'red' : 'blue'}">★ Game ${lastFinished.num} Final${lastFinished.note ? ' — ' + lastFinished.note : ''}</div>
+          <div class="c-title">${lastFinished.away === 'CAR' ? 'CAR Hurricanes at VGK Golden Knights' : 'VGK Golden Knights at CAR Hurricanes'}</div>
+          <div class="c-detail">${lastFinished.venue}</div>
+        </div>
+        <div>
+          <div class="c-score" style="color:${carWon ? 'var(--green)' : '#ff6666'}">${lastFinished.carScore} – ${lastFinished.vgkScore}</div>
+          <div class="c-note" style="color:var(--muted)">CAR ${carWon ? 'wins' : 'losses'}</div>
+        </div>
+      </div>`;
+  }
+}
+
+// ═══════════════════════════════════════════════
+// RENDER OVERVIEW hero / stats
+// ═══════════════════════════════════════════════
+function renderOverview(wins) {
+  document.getElementById('ov-series').textContent = `${wins.car}–${wins.vgk}`;
+  const liveGame = SCF.games.find(g => g.state === 'LIVE' || g.state === 'CRIT');
+  const nextGame = SCF.games.find(g => g.state === 'FUT' || g.state === 'PRE');
+  const pill = document.getElementById('ov-pill');
+  if (wins.car === 4) { pill.textContent = '🏆 Stanley Cup Champions'; pill.className = 'pill pill-gold'; }
+  else if (wins.vgk === 4) { pill.textContent = 'Series over'; pill.className = 'pill pill-red'; }
+  else if (liveGame) { pill.textContent = `Game ${liveGame.num} LIVE`; pill.className = 'pill pill-red'; }
+  else if (nextGame) {
+    const d = new Date(nextGame.date);
+    pill.textContent = `Game ${nextGame.num} — ${d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}`;
+    pill.className = wins.car === wins.vgk ? 'pill pill-gold' : (wins.car > wins.vgk ? 'pill pill-green' : 'pill pill-red');
+  }
+  const totalW = wins.car + wins.vgk;
+  document.getElementById('ov-record').textContent = `${12 + wins.car}–${1 + wins.vgk}`;
+}
+
+// ═══════════════════════════════════════════════
+// RENDER BRACKET series indicator
+// ═══════════════════════════════════════════════
+function renderBracket(wins) {
+  document.getElementById('br-car-wins').textContent = wins.car;
+  document.getElementById('br-vgk-wins').textContent = wins.vgk;
+  // Series label
+  let lbl = wins.car === wins.vgk ? `Series tied ${wins.car}–${wins.vgk}` :
+    wins.car > wins.vgk ? `CAR leads ${wins.car}–${wins.vgk}` : `VGK leads ${wins.vgk}–${wins.car}`;
+  if (wins.car === 4) lbl = 'CAR wins 🏆';
+  if (wins.vgk === 4) lbl = 'VGK wins series';
+  document.getElementById('br-series-label').textContent = lbl;
+  // Dots
+  const dots = document.getElementById('series-dots');
+  dots.innerHTML = '';
+  for (let i = 0; i < 4; i++) {
+    const d = document.createElement('div');
+    d.className = 'series-dot ' + (i < wins.car ? 'car' : 'empty');
+    dots.appendChild(d);
+  }
+  dots.appendChild(Object.assign(document.createElement('span'), {style:'font-size:11px;color:var(--muted);padding:0 4px;', textContent:'·'}));
+  for (let i = 0; i < 4; i++) {
+    const d = document.createElement('div');
+    d.className = 'series-dot ' + (i < wins.vgk ? 'vgk' : 'empty');
+    dots.appendChild(d);
+  }
+}
+
+// ═══════════════════════════════════════════════
+// RENDER LIVE TAB series callout
+// ═══════════════════════════════════════════════
+function renderLiveCallout(wins) {
+  const liveGame = SCF.games.find(g => g.state === 'LIVE' || g.state === 'CRIT');
+  const nextGame = SCF.games.find(g => g.state === 'FUT' || g.state === 'PRE');
+  const el = document.getElementById('live-series-callout');
+  let lbl = wins.car === wins.vgk ? `Series tied ${wins.car}–${wins.vgk}` :
+    wins.car > wins.vgk ? `CAR leads ${wins.car}–${wins.vgk}` : `VGK leads ${wins.vgk}–${wins.car}`;
+  if (liveGame) {
+    el.innerHTML = `<div class="callout livegame">
+      <div><div class="c-label red">⚡ LIVE — Game ${liveGame.num} · ${lbl}</div>
+      <div class="c-title">CAR Hurricanes vs VGK Golden Knights</div>
+      <div class="c-detail">${periodLabel(liveGame.period) || '?'} · ${liveGame.clock || ''} · ${liveGame.venue}</div></div>
+      <div><div class="c-score" style="color:${(liveGame.carScore??0)>=(liveGame.vgkScore??0)?'var(--green)':'#ff6666'}">${liveGame.carScore??0} – ${liveGame.vgkScore??0}</div></div>
+    </div>`;
+  } else if (nextGame) {
+    const d = new Date(nextGame.date);
+    const dateStr = d.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
+    const timeStr = d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZoneName:'short'});
+    el.innerHTML = `<div class="callout nextgame">
+      <div><div class="c-label gold">🏆 Stanley Cup Final — Game ${nextGame.num}</div>
+      <div class="c-title">${nextGame.away === 'CAR' ? 'CAR Hurricanes at VGK Golden Knights' : 'VGK Golden Knights at CAR Hurricanes'}</div>
+      <div class="c-detail">${dateStr} · ${timeStr} · ${nextGame.venue} · ${lbl}</div></div>
+    </div>`;
+  }
+}
+
+// ═══════════════════════════════════════════════
+// COUNTDOWN — dynamically targets next SCF game
+// ═══════════════════════════════════════════════
+let cdTimer;
+function startCountdown() {
+  if (cdTimer) clearInterval(cdTimer);
+  const nextGame = SCF.games.find(g => g.state === 'FUT' || g.state === 'PRE' || g.state === 'LIVE' || g.state === 'CRIT');
+  if (!nextGame) { ['d','h','m','s'].forEach(u => document.getElementById('cd-'+u).textContent = '00'); return; }
+  const target = new Date(nextGame.date);
+  function tick() {
+    const diff = target - Date.now();
+    if (diff <= 0) {
+      ['d','h','m','s'].forEach(u => document.getElementById('cd-'+u).textContent = '00');
+      return;
+    }
+    document.getElementById('cd-d').textContent = String(Math.floor(diff/864e5)).padStart(2,'0');
+    document.getElementById('cd-h').textContent = String(Math.floor((diff%864e5)/36e5)).padStart(2,'0');
+    document.getElementById('cd-m').textContent = String(Math.floor((diff%36e5)/6e4)).padStart(2,'0');
+    document.getElementById('cd-s').textContent = String(Math.floor((diff%6e4)/1e3)).padStart(2,'0');
+  }
+  tick();
+  cdTimer = setInterval(tick, 1000);
+}
+
+// Also update countdown label
+function updateCountdownLabel(wins) {
+  const nextGame = SCF.games.find(g => g.state === 'FUT' || g.state === 'PRE');
+  const label = document.querySelector('#tab-live .cd-grid').previousElementSibling;
+  if (label && nextGame) {
+    label.textContent = `Countdown to Game ${nextGame.num} Puck Drop`;
+  } else if (label) {
+    label.textContent = wins.car === 4 ? '🏆 CAR wins the Cup!' : 'Series complete';
+  }
+}
+
+// ═══════════════════════════════════════════════
+// LIVE SCORES — all of today's NHL games
+// ═══════════════════════════════════════════════
 let liveTimer;
 function startLive() {
   fetchScores();
@@ -544,61 +795,126 @@ function startLive() {
 }
 
 async function fetchScores() {
-  const feed = document.getElementById('live-feed');
-  const rt = document.getElementById('rt');
+  const btn = document.getElementById('refresh-btn');
+  btn.disabled = true;
   try {
-    const today = new Date().toISOString().split('T')[0];
-    const res = await fetch('https://api-web.nhle.com/v1/score/' + today);
-    if (!res.ok) throw new Error('bad');
-    const data = await res.json();
-    const games = data.games || [];
-    if (!games.length) {
-      feed.innerHTML = noGamesHTML();
-    } else {
-      feed.innerHTML = games.map(gameHTML).join('');
-    }
-    rt.textContent = 'Updated ' + new Date().toLocaleTimeString() + ' · auto-refreshes every 30s';
+    const apiGames = await fetchNHLScores();
+    mergeAPIGames(apiGames);
+    const wins = getSeriesWins();
+    renderAll(wins);
+    renderScoreboard(apiGames, wins);
+    document.getElementById('rt').textContent =
+      `Updated ${new Date().toLocaleTimeString()} · auto-refreshes every 30s · api-web.nhle.com`;
   } catch(e) {
-    feed.innerHTML = fallbackHTML();
-    rt.textContent = 'Could not reach NHL API — showing scheduled data';
+    renderScoreboardFallback();
+    document.getElementById('rt').textContent = 'NHL API unavailable — showing cached data';
+  } finally {
+    btn.disabled = false;
   }
 }
 
-function gameHTML(g) {
-  const home = g.homeTeam, away = g.awayTeam;
+function renderScoreboard(apiGames, wins) {
+  const feed = document.getElementById('live-feed');
+  if (!apiGames.length) { feed.innerHTML = renderSCFFallback(wins); return; }
+
+  // Sort: SCF first, then others
+  const sorted = [...apiGames].sort((a, b) => {
+    const aScf = isSCFGame(a), bScf = isSCFGame(b);
+    if (aScf && !bScf) return -1;
+    if (!aScf && bScf) return 1;
+    return new Date(a.startTimeUTC) - new Date(b.startTimeUTC);
+  });
+
+  feed.innerHTML = sorted.map(g => gameRowHTML(g)).join('') || renderSCFFallback(wins);
+}
+
+function gameRowHTML(g) {
+  const away = g.awayTeam, home = g.homeTeam;
   const st = g.gameState;
-  const isLive = st==='LIVE'||st==='CRIT';
-  const isFinal = st==='FINAL'||st==='OFF';
-  const isCar = home?.abbrev==='CAR'||away?.abbrev==='CAR';
-  const timeStr = g.startTimeUTC ? new Date(g.startTimeUTC).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '';
-  const status = isLive ? `P${g.period} · ${g.clock?.timeRemaining||''}` : isFinal ? 'Final' : timeStr;
-  const score = (isLive||isFinal) ? `${away?.score??0} – ${home?.score??0}` : '—';
-  const livePip = isLive ? ' <span class="badge-live">LIVE</span>' : '';
-  return `<div class="lgrow${isCar?' car-game':''}">
-    <div><div class="lg-teams">${away?.abbrev||'?'} <span style="color:var(--muted)">at</span> ${home?.abbrev||'?'}</div>
-    <div class="lg-status">${status}${livePip}</div></div>
-    <div class="lg-score">${score}</div>
+  const isLive = st === 'LIVE' || st === 'CRIT';
+  const isFinal = st === 'FINAL' || st === 'OFF';
+  const isScf = isSCFGame(g);
+  const isCar = away?.abbrev === 'CAR' || home?.abbrev === 'CAR';
+
+  const score = (isLive || isFinal)
+    ? `${away?.score ?? 0} – ${home?.score ?? 0}`
+    : '—';
+
+  let stateLabel = '';
+  if (isLive) stateLabel = `<span class="badge-live">LIVE</span> ${periodLabel(g.period)} ${g.clock?.timeRemaining || ''}`;
+  else if (isFinal) stateLabel = `<span class="badge-w">Final</span>${g.periodDescriptor?.periodType === 'OT' ? ' OT' : g.periodDescriptor?.periodType === 'SO' ? ' SO' : ''}`;
+  else {
+    const d = new Date(g.startTimeUTC);
+    stateLabel = d.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit', timeZoneName:'short'});
+  }
+
+  let scfBadge = '';
+  if (isScf) {
+    const wins = getSeriesWins();
+    const carSc = away?.abbrev === 'CAR' ? away?.score : home?.score;
+    const vgkSc = away?.abbrev === 'VGK' ? away?.score : home?.score;
+    scfBadge = `<div style="margin-top:4px;"><span class="badge-scf">🏆 SCF · CAR ${wins.car}–${wins.vgk} VGK</span></div>`;
+  }
+
+  return `<div class="sb-row${isScf ? ' scf-game' : (isCar ? ' car-game' : '')}">
+    <div class="sb-left">
+      <div class="sb-teams">${away?.abbrev || '?'} <span style="color:var(--muted);font-weight:400">at</span> ${home?.abbrev || '?'}</div>
+      <div class="sb-sub">${stateLabel}${scfBadge}</div>
+    </div>
+    <div class="sb-right">
+      <div class="sb-score" style="color:${isScf && isLive ? 'var(--gold)' : 'var(--text)'}">${score}</div>
+    </div>
   </div>`;
 }
 
-function noGamesHTML() {
-  return `<div class="lgrow car-game">
-    <div><div class="lg-teams">MTL Canadiens <span style="color:var(--muted)">at</span> CAR Hurricanes</div>
-    <div class="lg-status">Game 5 is tomorrow — May 29, 8 PM EDT</div></div>
-    <div class="lg-score" style="color:var(--blue)">TBD</div>
-  </div>`;
-}
-
-function fallbackHTML() {
-  return `<div class="lgrow car-game">
-    <div><div class="lg-teams">MTL Canadiens <span style="color:var(--muted)">at</span> CAR Hurricanes</div>
-    <div class="lg-status">Game 5 · Fri May 29 · 8:00 PM EDT · PNC Arena</div></div>
-    <div class="lg-score" style="color:var(--blue)">TBD</div>
+function renderSCFFallback(wins) {
+  const nextGame = SCF.games.find(g => g.state === 'FUT' || g.state === 'PRE');
+  if (!nextGame) return `<div style="padding:1.2rem;color:var(--muted);font-size:13px;">No games today.</div>`;
+  const d = new Date(nextGame.date);
+  return `<div class="sb-row scf-game">
+    <div class="sb-left">
+      <div class="sb-teams">CAR Hurricanes at VGK Golden Knights</div>
+      <div class="sb-sub"><span class="badge-scf">🏆 SCF Game ${nextGame.num}</span>
+        <span style="margin-left:8px;color:var(--muted);">${d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})} · ${d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZoneName:'short'})}</span>
+      </div>
+    </div>
+    <div class="sb-right"><div class="sb-score" style="color:var(--blue)">TBD</div></div>
   </div>
-  <div style="padding:.75rem 1.1rem;font-size:12px;color:var(--muted);border-top:1px solid var(--border)">
-    Live scores via api-web.nhle.com — will populate when the game is live. Hit Refresh to try again.
+  <div style="padding:.75rem 1.1rem;font-size:12px;color:var(--muted);border-top:1px solid var(--border);">
+    Live scores via api-web.nhle.com — loads automatically when games are live
   </div>`;
 }
+
+function renderScoreboardFallback() {
+  const wins = getSeriesWins();
+  document.getElementById('live-feed').innerHTML = renderSCFFallback(wins);
+}
+
+// ═══════════════════════════════════════════════
+// MASTER RENDER — update all tabs
+// ═══════════════════════════════════════════════
+function renderAll(wins) {
+  renderOverview(wins);
+  renderOverviewCallout(wins);
+  renderBracket(wins);
+  renderLiveCallout(wins);
+  updateCountdownLabel(wins);
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+(async () => {
+  startCountdown();
+  try {
+    const apiGames = await fetchNHLScores();
+    mergeAPIGames(apiGames);
+    const wins = getSeriesWins();
+    renderAll(wins);
+  } catch(e) {
+    renderAll(getSeriesWins());
+  }
+})();
 </script>
 </body>
 </html>
